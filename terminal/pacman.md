@@ -18,3 +18,11 @@ ___
 **pacman -Rsc <pkg>** - uninstall a package
 **pacman -Syu <pkg>** install and update package list
 
+### Query
+**pacman -Qe** - list explicitly-installed packages
+**pacman -Ql <pkg>** - what files does this package have?
+**pacman -Qii <pkg>** - list info on package
+
+### Orphans/other
+**pacman -Qdt** - list unneeded packages
+**pacman -Rns $(pacman -Qdrq) - uninstall unneeded packages.
