@@ -1,0 +1,65 @@
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { FileText } from 'lucide-react';
+
+const DocumentAssemblyApp = () => {
+  const [documentType, setDocumentType] = useState('');
+  const [clientName, setClientName] = useState('');
+  const [caseNumber, setCaseNumber] = useState('');
+
+  const handleGenerate = () => {
+    console.log('Generating document:', { documentType, clientName, caseNumber });
+    // Here you would typically call your document generation logic
+  };
+
+  return (
+    <div className="p-4 max-w-md mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <FileText className="mr-2" />
+            Document Assembly
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <Select
+              value={documentType}
+              onValueChange={setDocumentType}
+              placeholder="Select document type"
+            >
+              <Select.Option value="contract">Contract</Select.Option>
+              <Select.Option value="will">Will</Select.Option>
+              <Select.Option value="pleading">Pleading</Select.Option>
+            </Select>
+            
+            <Input
+              placeholder="Client Name"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+            />
+            
+            <Input
+              placeholder="Case Number"
+              value={caseNumber}
+              onChange={(e) => setCaseNumber(e.target.value)}
+            />
+            
+            <Button 
+              onClick={handleGenerate}
+              className="w-full"
+              disabled={!documentType || !clientName || !caseNumber}
+            >
+              Generate Document
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default DocumentAssemblyApp;
