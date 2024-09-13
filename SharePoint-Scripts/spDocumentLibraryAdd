@@ -1,0 +1,36 @@
+protected string AddPdfToList(string base64, string filename)
+{
+    int uid = System.Globalization.CultureInfo.CurrentUICulture.LCID;
+    string read = uid != 1033 ? "Okuma" : "Read";
+    SPContext context = SPContext.Current;
+    SPUser user = SPContext.Current.Web.CurrentUser;
+    string url = string.Empty;
+    byte[] pdfBytes = Convert.FromBase64String(base64);
+    SPSecurity.RunWithElevatedPrivileges(delegate ()
+    {
+        using (var siteCollection = new SPSite(context.Site.Url))
+        {
+            using (var currentWeb = siteCollection.OpenWeb(context.Web.ID))
+            {
+                currentWeb.AllowUnsafeUpdates = true;
+                SPFolder myLibrary = currentWeb.Folders["TestDocLib"];
+
+                SPFile spfile = myLibrary.Files.Add(filename, pdfBytes, false);
+
+                spfile.Item.BreakRoleInheritance(false);
+
+                SPRoleDefinitionCollection webroledefinitions = currentWeb.RoleDefinitions;
+                SPRoleAssignment roleassignment = new SPRoleAssignment(user);
+                roleassignment.RoleDefinitionBindings.Add(webroledefinitions[read]);
+                spfile.Item.RoleAssignments.Add(roleassignment);
+
+                myLibrary.Update();
+
+                url = spfile.Url;
+                currentWeb.AllowUnsafeUpdates = false;
+            }
+        }
+    });
+
+    return url;
+}
